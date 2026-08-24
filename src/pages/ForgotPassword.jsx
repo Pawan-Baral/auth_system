@@ -1,17 +1,29 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+
+const forgotPasswordSchema = Yup.object().shape({
+    email: Yup.string().trim().email("Invalid email address").required("Email is required"),
+
+})
 
 function ForgotPassword() {
-    function handleSubmit(event) {
-        event.preventDefault();
-        const email = event.target.email.value;
-        console.log("Email submitted:", email);
-    }
+    const formik = useFormik({
+        initialValues: {
+            email: "",
+        },
+
+        validationSchema: forgotPasswordSchema,
+        onSubmit: (values,) => {
+            console.log("Reset requested for:", values.email);
+        }
+    })
 
     return (
         <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4" >
-            <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-black-900 mb-4 dark:text-black">Forgot Password</h2>
+            <form onSubmit={handleSubmit} className="bg-black p-6 rounded-lg shadow-md">
+                <h2 className="text-2xl font-bold text-black mb-4 dark:text-black">Forgot Password</h2>
                 <p className="text-gray-600 mb-4">
                     Enter your email address and we'll send you a link to reset your password.
                 </p>
