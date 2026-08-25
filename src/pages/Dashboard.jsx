@@ -7,9 +7,10 @@ import {
     UserRound,
 } from "lucide-react";
 
-
+import { getDashboard } from "@/api/authApi";
 import Navbar from "@/component/Navbar";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function getStoredUser() {
     try {
@@ -21,13 +22,48 @@ function getStoredUser() {
 
 
 function Dashboard() {
+    const [dashboardData, setDashboardData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
     const user = getStoredUser();
     const displayName = user?.fullName || "User";
+    useEffect(() => {
+        async function loadDashboard() {
+            try {
+                const data = await getDashboard();
+
+                console.log("Dashboard response:", data);
+                setDashboardData(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        loadDashboard();
+    }, []);
 
     return (
         <main className="min-h-screen bg-slate-50 text-slate-900">
             <Navbar />
+            {isLoading && (
+                <p className="p-4 text-blue-600">
+                    Loading dashboard...
+                </p>
+            )}
 
+            {error && (
+                <p className="p-4 text-red-600">
+                    {error}
+                </p>
+            )}
+
+            {dashboardData && (
+                <p className="p-4 text-green-600">
+                    {dashboardData.message}
+                </p>
+            )}
             <div className="mx-auto w-full max-w-6xl px-4 py-8 ">
                 <section className="mb-8">
                     <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-blue-600">
