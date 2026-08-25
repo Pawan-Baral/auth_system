@@ -86,4 +86,29 @@ export async function resetPassword(resetData) {
         );
     }
 }
+export async function getDashboard() {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+        throw new Error("You are not authenticated");
+    }
+
+    try {
+        const response = await api.get("/api/auth/dashboard", {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+
+        return response.data;
+    } catch (error) {
+        const apiMessage = error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(message || "Unable to load dashboard");
+    }
+}
 

@@ -92,7 +92,7 @@ function ForgotPassword() {
                     </p>
 
                 )}
-                <Link to="/login" className=" text-sm ">
+                <Link to="/login" className=" text-sm  hover:underline">
                     Back to Login
                 </Link>
             </form>
