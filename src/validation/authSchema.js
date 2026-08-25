@@ -8,6 +8,10 @@ export const registerSchema = Yup.object({
     email: Yup.string()
         .trim()
         .email("Enter a valid email")
+        .matches(
+            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+            'Invalid email format (e.g., name@example.com)'
+        )
         .required("Email is required"),
 
     phone: Yup.string()
@@ -33,6 +37,10 @@ export const loginSchema = Yup.object({
         .required("Email is required"),
 
     password: Yup.string()
+        .min(8, "Password must contain at least 8 characters")
+        .matches(/[A-Z]/, "Include an uppercase letter")
+        .matches(/[a-z]/, "Include a lowercase letter")
+        .matches(/[0-9]/, "Include a number")
         .required("Password is required"),
 });
 

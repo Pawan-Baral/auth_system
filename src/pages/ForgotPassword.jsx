@@ -1,12 +1,11 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { forgotPasswordSchema } from "../validation/authSchema";
+import { forgotPassword } from "../api/authApi";
+import { Link } from "react-router-dom";
 
-const forgotPasswordSchema = Yup.object().shape({
-    email: Yup.string().trim().email("Invalid email address").required("Email is required"),
 
-})
 
 function ForgotPassword() {
     const formik = useFormik({
@@ -15,15 +14,41 @@ function ForgotPassword() {
         },
 
         validationSchema: forgotPasswordSchema,
-        onSubmit: (values,) => {
-            console.log("Reset requested for:", values.email);
-        }
-    })
+
+        onSubmit: async (
+            values,
+            { setSubmitting, setStatus }
+        ) => {
+            setStatus(null);
+
+            try {
+                const data = await forgotPassword(values.email);
+
+                setStatus({
+                    type: "success",
+                    message: data.message,
+                });
+
+                console.log("Reset link:", data.resetLink);
+            } catch (error) {
+                console.error(error.message);
+                setStatus({
+                    type: "error",
+                    message: error.message,
+                });
+            } finally {
+                setSubmitting(false);
+            }
+        },
+    });
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4" >
-            <form onSubmit={handleSubmit} className="bg-black p-6 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-black mb-4 dark:text-black">Forgot Password</h2>
+        <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8">
+            <form onSubmit={formik.handleSubmit} className="flex w-full max-w-md flex-col gap-5 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg sm:p-8" noValidate>
+                <div className="text-center">
+                    <h1>Forgot Password</h1>
+
+                </div>
                 <p className="text-gray-600 mb-4">
                     Enter your email address and we'll send you a link to reset your password.
                 </p>
@@ -32,20 +57,44 @@ function ForgotPassword() {
                         Email Address
                     </label>
                     <Input
-                        type="email"
                         id="email"
                         name="email"
-                        placeholder="jondoe@example.com"
-                        className="border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
+                        type="email"
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                     />
+                    {formik.touched.email && formik.errors.email && (
+                        <p className="text-sm text-red-600">
+                            {formik.errors.email}
+                        </p>
+                    )}
                 </div>
                 <Button
                     type="submit"
-                    className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={formik.isSubmitting}
+                    className="h-11 w-full bg-blue-600 text-white hover:bg-blue-700"
                 >
-                    Send Reset Link
+                    {formik.isSubmitting
+                        ? "Sending..."
+                        : "Send Reset Link"
+                    }
                 </Button>
+                {formik.status && (
+                    <p
+                        className={
+                            formik.status.type === "success"
+                                ? "rounded-md bg-green-100 p-3 text-sm text-green-700"
+                                : "rounded-md bg-red-100 p-3 text-sm text-red-700"
+                        }
+                    >
+                        {formik.status.message}
+                    </p>
+
+                )}
+                <Link to="/login" className=" text-sm ">
+                    Back to Login
+                </Link>
             </form>
         </main>
     )

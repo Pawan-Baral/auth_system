@@ -43,17 +43,17 @@ function Register() {
     });
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+        <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-8">
             <form
                 onSubmit={formik.handleSubmit}
-                className="flex w-full max-w-sm flex-col gap-4 rounded-lg bg-white p-6 shadow-md"
+                className="flex w-full max-w-md flex-col gap-5 rounded-2xl bg-white px-4 py-8 shadow-lg"
                 noValidate
             >
                 <h1 className="text-center text-2xl font-bold text-black">
                     Create Account
                 </h1>
 
-                {/* General API success or error message */}
+
                 {formik.status && (
                     <p
                         className={
@@ -66,7 +66,7 @@ function Register() {
                     </p>
                 )}
 
-                {/* Full name */}
+
                 <div className="flex flex-col gap-1">
                     <Input
                         id="fullName"
@@ -87,7 +87,7 @@ function Register() {
                         )}
                 </div>
 
-                {/* Email */}
+
                 <div className="flex flex-col gap-1">
                     <Input
                         id="email"
@@ -107,7 +107,7 @@ function Register() {
                     )}
                 </div>
 
-                {/* Phone */}
+
                 <div className="flex flex-col gap-1">
                     <Input
                         id="phone"
@@ -127,7 +127,7 @@ function Register() {
                     )}
                 </div>
 
-                {/* Password */}
+
                 <div className="flex flex-col gap-1">
                     <Input
                         id="password"
@@ -148,7 +148,7 @@ function Register() {
                         )}
                 </div>
 
-                {/* Confirm password */}
+
                 <div className="flex flex-col gap-1">
                     <Input
                         id="confirmPassword"
