@@ -10,13 +10,13 @@ function Profile() {
 
                 const data = await getProfile();
                 console.log("Profile Response", data);
-                setProfile(data.user);
+                setProfile(data);
             }
             catch (error) {
-                log.error(error);
+                console.error(error);
             }
         }
-        loadProfile;
+        loadProfile();
     }
         , []
     )

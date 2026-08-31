@@ -1,10 +1,28 @@
 import { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
 import { Button } from "@/components/ui/button";
+import { logoutUser } from "@/api/authApi";
 
 function DashboardLayout() {
+    const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const storedUser = localStorage.getItem("user");
+    const user = storedUser ? JSON.parse(storedUser) : null;
+    const isAdmin = user?.role === "admin";
+    async function handleLogout() {
+        try {
+            await logoutUser();
+        } catch (error) {
+            console.error("Log out error:", error);
+        } finally {
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("user");
+            navigate("/login", { replace: true });
+        }
+
+    }
     return (
         <>
             <Navbar onOpenSidebar={() => setIsSidebarOpen(true)} />
@@ -16,7 +34,21 @@ function DashboardLayout() {
                             <Button onClick={() => setIsSidebarOpen(false)} className="bg-red-500 size-10 text-2xl  ">X</Button>
                             <Link to="/profile" onClick={() => setIsSidebarOpen(false)}>Profile</Link>
                             <Link to="/dashboard" onClick={() => setIsSidebarOpen(false)}>Dashboard</Link>
-                            <p>LogOut</p>
+                            <Button
+                                type="button"
+                                onClick={handleLogout}
+                                className="bg-red-600 text-white rounded-full hover:bg-red-700"
+                            >Logout</Button>
+
+                            {isAdmin && (
+                                <Link
+                                    to="/admin"
+                                    onClick={() => setIsSidebarOpen(false)}
+                                    className="font-semibold text-red-600"
+                                >
+                                    Admin Dashboard
+                                </Link>
+                            )}
                         </aside>
                     </>
                 )

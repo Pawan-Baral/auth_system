@@ -1,19 +1,45 @@
-export default function Contact() {
-    function handleSubmit(event) {
-        event.preventDefault();
+import { useFormik } from "formik";
+import { submitContact } from "@/api/authApi";
+import { contactSchema } from "../validation/contactSchema";
 
-        console.log("Contact form submitted");
-    }
+
+export default function Contact() {
+    const formik = useFormik({
+        initialValues: {
+            name: "",
+            email: "",
+            subject: "",
+            message: "",
+        },
+        validationSchema: contactSchema,
+
+        onSubmit: async (values, { setSubmitting, setStatus, resetForm }) => {
+            setStatus(null);
+            try {
+                const response = await submitContact(values);
+                resetForm();
+                setStatus({
+                    type: "success",
+                    message: response.message || "Message sent successfully",
+                });
+            } catch (error) {
+                setStatus({
+                    type: "error",
+                    message: error.message,
+                });
+            } finally {
+                setSubitting(false);
+            }
+        }
+    })
 
     return (
         <main className="min-h-screen bg-slate-50 px-6 py-12">
             <div className="mx-auto max-w-xl">
                 <header className="text-center">
-                    <p className="text-sm font-semibold uppercase tracking-wider text-blue-600">
-                        Contact
-                    </p>
 
-                    <h1 className="mt-2 text-3xl font-bold text-slate-900">
+
+                    <h1 className="mt-2 text-3xl font-bold text-slate-900 uppercase tracking-wide text-blue-600">
                         Send us a message
                     </h1>
 
@@ -23,21 +49,35 @@ export default function Contact() {
                 </header>
 
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={formik.handleSubmit}
                     className="mt-10 flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
                 >
+                    {formik.status && (
+                        <p
+                            className={
+                                formik.status.type === "success"
+                                    ? "text-sm text-green-600"
+                                    : "text-sm text-red-600"
+                            }
+                        >
+                            {formik.status.message}
+                        </p>
+                    )}
                     <div className="flex flex-col gap-2">
                         <label
-                            htmlFor="fullName"
+                            htmlFor="name"
                             className="text-sm font-medium text-slate-700"
                         >
                             Full name
                         </label>
 
                         <input
-                            id="fullName"
-                            name="fullName"
+                            id="name"
+                            name="name"
                             type="text"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500"
                         />
                     </div>
@@ -54,8 +94,16 @@ export default function Contact() {
                             id="email"
                             name="email"
                             type="email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500"
                         />
+                        {formik.touched.email && formik.errors.email && (
+                            <p className="text-sm text-red-600">
+                                {formik.errors.email}
+                            </p>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -70,6 +118,9 @@ export default function Contact() {
                             id="subject"
                             name="subject"
                             type="text"
+                            value={formik.values.subject}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500"
                         />
                     </div>
@@ -86,6 +137,9 @@ export default function Contact() {
                             id="message"
                             name="message"
                             rows={5}
+                            value={formik.values.message}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             className="resize-none rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500"
                         />
                     </div>
