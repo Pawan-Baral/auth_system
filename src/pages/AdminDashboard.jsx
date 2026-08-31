@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getAdminUsers, deleteAdminUser } from "@/api/authApi";
-
-import React from 'react'
+import { getAdminUsers, deleteAdminUser, updateAdminUser } from "@/api/authApi";
+import { adminUserSchema } from "../validation/adminUserSchema";
+import { useFormik } from "formik";
 
 function AdminDashboard() {
     const [activeSection, setActiveSection] = useState("overview");
@@ -15,6 +15,50 @@ function AdminDashboard() {
     const currentUser = storedUser
         ? JSON.parse(storedUser)
         : null;
+    const [editingUser, setEditingUser] = useState(null);
+    const editFormik = useFormik({
+        enableReinitialize: true,
+
+        initialValues: {
+            fullName: editingUser?.fullName || "",
+            email: editingUser?.email || "",
+            phone: editingUser?.phone || "",
+            role: editingUser?.role || "user",
+        },
+
+        validationSchema: adminUserSchema,
+
+        onSubmit: async (
+            values,
+            { setSubmitting, resetForm }
+        ) => {
+            if (!editingUser) {
+                return;
+            }
+
+
+
+            try {
+                await updateAdminUser(editingUser.id, values);
+
+                setUsers((currentUsers) =>
+                    currentUsers.map((listedUser) =>
+                        listedUser.id === editingUser.id
+                            ? { ...listedUser, ...values }
+                            : listedUser
+                    )
+                );
+
+                alert("User updated successfully");
+                resetForm();
+                setEditingUser(null);
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                setSubmitting(false);
+            }
+        },
+    });
 
     async function handleDelete(user) {
         const confirmed = window.confirm(
@@ -104,6 +148,131 @@ function AdminDashboard() {
                 </nav>
 
             </header>
+            {activeSection === "users" && editingUser && (
+                <form
+                    onSubmit={editFormik.handleSubmit}
+                    className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-6"
+                >
+                    <h3 className="text-xl font-semibold">
+                        Edit {editingUser.fullName}
+                    </h3>
+
+                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                        <div>
+                            <label htmlFor="edit-fullName" className="text-sm font-medium">
+                                Full name
+                            </label>
+
+                            <input
+                                id="edit-fullName"
+                                name="fullName"
+                                value={editFormik.values.fullName}
+                                onChange={editFormik.handleChange}
+                                onBlur={editFormik.handleBlur}
+                                className="mt-1 h-10 w-full rounded-md border bg-white px-3"
+                            />
+
+                            {editFormik.touched.fullName &&
+                                editFormik.errors.fullName && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {editFormik.errors.fullName}
+                                    </p>
+                                )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="edit-email" className="text-sm font-medium">
+                                Email
+                            </label>
+
+                            <input
+                                id="edit-email"
+                                name="email"
+                                type="email"
+                                value={editFormik.values.email}
+                                onChange={editFormik.handleChange}
+                                onBlur={editFormik.handleBlur}
+                                className="mt-1 h-10 w-full rounded-md border bg-white px-3"
+                            />
+
+                            {editFormik.touched.email &&
+                                editFormik.errors.email && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {editFormik.errors.email}
+                                    </p>
+                                )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="edit-phone" className="text-sm font-medium">
+                                Phone
+                            </label>
+
+                            <input
+                                id="edit-phone"
+                                name="phone"
+                                value={editFormik.values.phone}
+                                onChange={editFormik.handleChange}
+                                onBlur={editFormik.handleBlur}
+                                className="mt-1 h-10 w-full rounded-md border bg-white px-3"
+                            />
+
+                            {editFormik.touched.phone &&
+                                editFormik.errors.phone && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {editFormik.errors.phone}
+                                    </p>
+                                )}
+                        </div>
+
+                        <div>
+                            <label htmlFor="edit-role" className="text-sm font-medium">
+                                Role
+                            </label>
+
+                            <select
+                                id="edit-role"
+                                name="role"
+                                value={editFormik.values.role}
+                                onChange={editFormik.handleChange}
+                                onBlur={editFormik.handleBlur}
+                                disabled={editingUser.id === currentUser?.id}
+                                className="mt-1 h-10 w-full rounded-md border bg-white px-3"
+                            >
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+
+                            {editFormik.touched.role &&
+                                editFormik.errors.role && (
+                                    <p className="mt-1 text-sm text-red-600">
+                                        {editFormik.errors.role}
+                                    </p>
+                                )}
+                        </div>
+                    </div>
+
+                    <div className="mt-6 flex gap-3">
+                        <Button
+                            type="submit"
+                            disabled={editFormik.isSubmitting}
+                            className="bg-blue-600 text-white hover:bg-blue-700"
+                        >
+                            {editFormik.isSubmitting
+                                ? "Saving..."
+                                : "Save changes"}
+                        </Button>
+
+                        <Button
+                            type="button"
+                            onClick={() => setEditingUser(null)}
+                            className="bg-slate-200 text-slate-900"
+                        >
+                            Cancel
+                        </Button>
+                    </div>
+                </form>
+            )}
 
             <section className="mt-8">
                 {
@@ -189,6 +358,7 @@ function AdminDashboard() {
                                                     <div className="flex gap-2">
                                                         <Button
                                                             type="button"
+                                                            onClick={() => setEditingUser(user)}
                                                             className="bg-blue-600 text-white hover:bg-blue-700"
                                                         >
                                                             Edit

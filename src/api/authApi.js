@@ -253,3 +253,32 @@ export async function deleteAdminUser(userId) {
         throw new Error(message || "Unable to delete user");
     }
 }
+export async function updateAdminUser(userId, updatedData) {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+        throw new Error("You are not authenticated");
+    }
+
+    try {
+        const response = await api.patch(
+            `/api/admin/users/${userId}`,
+            updatedData,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage = error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(message || "Unable to update user");
+    }
+}
