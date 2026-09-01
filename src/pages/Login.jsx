@@ -6,9 +6,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "@/api/authApi"
 import { useFormik } from "formik";
 import { loginSchema } from "../validation/authSchema";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 function Login() {
     const navigate = useNavigate();
+    const { startSession } = useAuth();
     const Formik = useFormik({
         initialValues: {
             email: "",
@@ -22,17 +25,17 @@ function Login() {
                 const data = await loginUser(values);
 
                 console.log("Login response: ", data);
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setStatus({
-                    type: "success",
-                    message: data.message || "Successful login!",
-                })
-                navigate("/dashboard", { replace: true })
+                startSession(data);
+
+                toast.success(
+                    data.message || "Login successful"
+                );
+
+                navigate("/home", { replace: true });
             }
             catch (error) {
                 console.error("Error Message ", error);
+                toast.error(error.message);
                 setStatus({
                     type: "error",
                     message: error.message,

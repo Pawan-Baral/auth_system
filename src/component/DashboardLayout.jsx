@@ -3,22 +3,21 @@ import { Outlet, Link, useNavigate } from "react-router-dom";
 import Navbar from "../component/Navbar";
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/api/authApi";
+import { useAuth } from "../context/AuthContext";
 
 function DashboardLayout() {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const storedUser = localStorage.getItem("user");
-    const user = storedUser ? JSON.parse(storedUser) : null;
-    const isAdmin = user?.role === "admin";
+
+
+    const { isAdmin, endSession } = useAuth();
     async function handleLogout() {
         try {
             await logoutUser();
         } catch (error) {
             console.error("Log out error:", error);
         } finally {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("user");
+            endSession();
             navigate("/login", { replace: true });
         }
 

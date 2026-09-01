@@ -1,9 +1,10 @@
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getAdminUsers, deleteAdminUser, updateAdminUser } from "@/api/authApi";
+import { getAdminUsers, deleteAdminUser, updateAdminUser, getAdminContacts, } from "@/api/authApi";
 import { adminUserSchema } from "../validation/adminUserSchema";
 import { useFormik } from "formik";
+import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"
 
 function AdminDashboard() {
     const [activeSection, setActiveSection] = useState("overview");
@@ -112,40 +113,47 @@ function AdminDashboard() {
 
                 <h1 className="mt-2 text-3xl font-bold text-slate-900">Admin Dashbard</h1>
 
-                <nav className="mt-8 flex flex-wrap gap-3">
-                    <Button
-                        type="button"
-                        onClick={() => setActiveSection("overview")}
-                        className={
-                            activeSection === "overview"
-                                ? "bg-red-600 text-white"
-                                : "bg-slate-200 text-slate-900"
-                        }
-                    >Overview</Button>
-                    <Button
-                        type="button"
-                        onClick={() => setActiveSection("users")}
-                        className={
-                            activeSection === "users"
-                                ? "bg-red-600 text-white"
-                                : "bg-slate-200 text-slate-900"
-                        }
-                    >
-                        Users
-                    </Button>
+                <Sheet>
+                    <SheetTrigger>Open Sidebar</SheetTrigger>
+                    <SheetContent side="left" className="flex flex-col">
 
-                    <Button
-                        type="button"
-                        onClick={() => setActiveSection("messages")}
-                        className={
-                            activeSection === "messages"
-                                ? "bg-red-600 text-white"
-                                : "bg-slate-200 text-slate-900"
-                        }
-                    >
-                        Messages
-                    </Button>
-                </nav>
+                        <nav className="mt-8 flex  flex-col flex-wrap gap-3">
+                            <Button
+                                type="button"
+                                onClick={() => setActiveSection("overview")}
+                                className={
+                                    activeSection === "overview"
+                                        ? "bg-red-600 text-white"
+                                        : "bg-slate-200 text-slate-900"
+                                }
+                            >Overview</Button>
+                            <Button
+                                type="button"
+                                onClick={() => setActiveSection("users")}
+                                className={
+                                    activeSection === "users"
+                                        ? "bg-red-600 text-white"
+                                        : "bg-slate-200 text-slate-900"
+                                }
+                            >
+                                Users
+                            </Button>
+
+                            <Button
+                                type="button"
+                                onClick={() => setActiveSection("messages")}
+                                className={
+                                    activeSection === "messages"
+                                        ? "bg-red-600 text-white"
+                                        : "bg-slate-200 text-slate-900"
+                                }
+                            >
+                                Messages
+                            </Button>
+                        </nav>
+                    </SheetContent>
+                </Sheet>
+
 
             </header>
             {activeSection === "users" && editingUser && (
