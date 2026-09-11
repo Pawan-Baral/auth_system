@@ -1,11 +1,12 @@
 import { useFormik } from "formik";
-
+import { Link, useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { registerUser } from "@/api/authApi";
 import { registerSchema } from "@/validation/authSchema";
 
 function Register() {
+    const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
             fullName: "",
@@ -31,6 +32,9 @@ function Register() {
                     type: "success",
                     message: data.message || "Registration successful",
                 });
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
             } catch (error) {
                 setStatus({
                     type: "error",

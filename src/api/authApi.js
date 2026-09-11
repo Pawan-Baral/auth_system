@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL = "http://192.168.150.169:3000";
 const api = axios.create({
-    baseURL: "http://192.168.150.169:3000",
+    baseURL: "https://auth.durlavparajuli.com.np",
 });
 
 // Runs before every request made with this Axios instance.
@@ -329,6 +329,200 @@ export async function getAdminContacts() {
 
         throw new Error(
             message || "Unable to load messages"
+        );
+    }
+}
+export async function createService(serviceData) {
+    try {
+        const response = await api.post(
+            "/api/services",
+            serviceData
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to create service"
+        );
+    }
+}
+
+export async function updateService(
+    serviceId,
+    serviceData
+) {
+    try {
+        const response = await api.patch(
+            `/api/services/${serviceId}`,
+            serviceData
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to update service"
+        );
+    }
+}
+
+export async function deleteService(serviceId) {
+    try {
+        const response = await api.delete(
+            `/api/services/${serviceId}`
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to delete service"
+        );
+    }
+}
+export async function updateProfile(profileData) {
+    try {
+        const response = await api.patch(
+            "/api/profile",
+            profileData
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to update profile"
+        );
+    }
+}
+export async function changePassword(passwordData) {
+    try {
+        const response = await api.patch(
+            "/api/profile/change-password",
+            passwordData
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to change password"
+        );
+    }
+}
+export async function getContactStats() {
+    try {
+        const response = await api.get(
+            "/api/contact/stats"
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to load contact statistics"
+        );
+    }
+}
+
+export async function setContactRead(
+    contactId,
+    isRead
+) {
+    try {
+        const response = await api.patch(
+            `/api/contact/${contactId}/read`,
+            { isRead }
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to update message status"
+        );
+    }
+}
+
+export async function deleteContact(contactId) {
+    try {
+        const response = await api.delete(
+            `/api/contact/${contactId}`
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage =
+            error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to delete message"
+        );
+    }
+}
+export async function getServiceByIdOrSlug(idOrSlug) {
+    try {
+        const response = await api.get(
+            `/api/services/${idOrSlug}`
+        );
+
+        return response.data;
+    } catch (error) {
+        const apiMessage = error.response?.data?.message;
+
+        const message = Array.isArray(apiMessage)
+            ? apiMessage.join(", ")
+            : apiMessage;
+
+        throw new Error(
+            message || "Unable to load service"
         );
     }
 }

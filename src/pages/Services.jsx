@@ -1,11 +1,12 @@
 import { getServices } from "@/api/authApi";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Services() {
     const [services, setServices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
-    const API_URL = "http://192.168.150.169:3000";
+    const API_URL = "https://auth.durlavparajuli.com.np";
 
     useEffect(() => {
         async function loadServices() {
@@ -34,14 +35,14 @@ export default function Services() {
 
 
     return (
-        <main className="mx-auto max-w-6xl px-6 py-12">
+        <main className="mx-auto max-w-6xl flex flex-col px-6 py-12">
             <h1 className="mb-8 text-3xl font-bold">Our Services</h1>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {services.map((service) => (
                     <article
                         key={service.id}
-                        className="overflow-hidden rounded-xl border bg-white shadow-sm"
+                        className="flex flex-col overflow-hidden rounded-xl border bg-white shadow-sm"
                     >
                         {service.image && (
                             <img
@@ -83,6 +84,12 @@ export default function Services() {
                                     </span>
                                 ))}
                             </div>
+                            <Link
+                                to={`/services/${service.id}`}
+                                className="mt-5 inline-block rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                            >
+                                View details
+                            </Link>
                         </div>
                     </article>
                 ))}

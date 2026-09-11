@@ -28,7 +28,7 @@ export default function Contact() {
                     message: error.message,
                 });
             } finally {
-                setSubitting(false);
+                setSubmitting(false);
             }
         }
     })
@@ -146,6 +146,7 @@ export default function Contact() {
 
                     <button
                         type="submit"
+                        disabled={formik.isSubmitting}
                         className="h-11 rounded-lg bg-blue-600 font-semibold text-white transition hover:bg-blue-700"
                     >
                         Send Message
