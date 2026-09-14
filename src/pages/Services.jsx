@@ -42,7 +42,7 @@ export default function Services() {
                 {services.map((service) => (
                     <article
                         key={service.id}
-                        className="flex flex-col overflow-hidden rounded-xl border bg-white shadow-sm"
+                        className="flex flex-col overflow-hidden transition hover:-translate-y-1 rounded-xl border bg-white shadow-sm"
                     >
                         {service.image && (
                             <img
