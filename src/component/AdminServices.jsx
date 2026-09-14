@@ -108,10 +108,6 @@ function AdminServices() {
     function closeForm() {
         setEditingService(null);
         setShowForm(false);
-        formik.resetForm();
-        if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-        }
     }
     async function handleSaveService(formData, serviceId) {
         return saveServiceMutation.mutateAsync({
@@ -226,6 +222,15 @@ function AdminServices() {
                                                     ? `${service.currency || "USD"} ${service.price}`
                                                     : "Price not provided"}
                                             </p>
+                                            <span
+                                                className={
+                                                    service.isActive
+                                                        ? "rounded-full bg-green-100 px-3 py-1 text-sm text-green-700"
+                                                        : "rounded-full bg-red-100 px-3 py-1 text-sm text-red-700"
+                                                }
+                                            >
+                                                {service.isActive ? "Active" : "Inactive"}
+                                            </span>
                                             <div className="mt-4 flex flex-wrap gap-2">
                                                 {service.tags?.map((tag) => (
                                                     <span

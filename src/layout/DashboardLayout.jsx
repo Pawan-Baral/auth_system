@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "../component/Navbar";
 import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/api/authApi";
@@ -8,7 +8,8 @@ import { useAuth } from "../context/AuthContext";
 function DashboardLayout() {
     const navigate = useNavigate();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+    const location = useLocation();
+    const isAdminPage = location.pathname.startsWith("/admin");
 
     const { isAdmin, endSession } = useAuth();
     async function handleLogout() {
@@ -21,10 +22,14 @@ function DashboardLayout() {
             navigate("/login", { replace: true });
         }
 
+
+    }
+    function handleOpenSidebar() {
+        setIsSidebarOpen(true);
     }
     return (
         <>
-            <Navbar onOpenSidebar={() => setIsSidebarOpen(true)} />
+            <Navbar onOpenSidebar={isAdminPage ? undefined : handleOpenSidebar} />
             {
                 isSidebarOpen && (
                     <>

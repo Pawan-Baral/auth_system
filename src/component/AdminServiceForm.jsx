@@ -13,6 +13,7 @@ function AdminServiceForm({ service, onSave, onCancel }) {
             description: service?.description || "",
             price: service?.price ?? "",
             tags: service?.tags?.join(", ") || "",
+            isActive: service?.isActive ?? true,
             image: null,
         },
 
@@ -38,6 +39,10 @@ function AdminServiceForm({ service, onSave, onCancel }) {
             tags.forEach((tag) => {
                 formData.append("tags", tag);
             });
+            formData.append(
+                "isActive",
+                String(values.isActive)
+            );
 
             try {
                 await onSave(formData, service?.id);
@@ -88,6 +93,23 @@ function AdminServiceForm({ service, onSave, onCancel }) {
                 onChange={formik.handleChange}
                 className="mb-3 w-full rounded border p-2"
             />
+            <div className="mb-5 flex items-center gap-3">
+                <input
+                    id="isActive"
+                    name="isActive"
+                    type="checkbox"
+                    checked={formik.values.isActive}
+                    onChange={formik.handleChange}
+                    className="h-4 w-4 rounded border-slate-300"
+                />
+
+                <label
+                    htmlFor="isActive"
+                    className="text-sm font-medium text-slate-700"
+                >
+                    Service is active
+                </label>
+            </div>
             <div className="mb-5">
 
                 <input

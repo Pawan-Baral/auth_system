@@ -50,11 +50,11 @@ export default function Home() {
                 <div className="mx-auto max-w-6xl space-y-12">
 
                     {/* Hero Banner Section */}
-                    <section className="rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-700 p-8 md:p-12 text-white shadow-xl">
-                        <span className="inline-block rounded-full bg-blue-500/30 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-100">
+                    <section className="rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-700 p-8  text-white shadow-xl">
+                        <span className="inline-block rounded-full bg-blue-500 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-blue-100">
                             Welcome back, {user?.fullName || "Valued Guest"}
                         </span>
-                        <h1 className="mt-4 text-3xl font-extrabold tracking-tight md:text-5xl">
+                        <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
                             Innovating the Digital Future
                         </h1>
                         <p className="mt-4 max-w-2xl text-base leading-relaxed text-blue-100 md:text-lg">
