@@ -40,8 +40,8 @@ function PublicLayout() {
                         <div className="flex items-center justify-between">
                             <div className="flex items-center justify-between  pb-4">
                                 <div>
-                                    <p className=" mx-3 text-md text-slate-500">
-                                        Account menu
+                                    <p className=" mx-3 text-md ">
+                                        Menu
                                     </p>
                                 </div>
 

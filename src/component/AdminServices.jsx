@@ -191,7 +191,7 @@ function AdminServices() {
                                                 <img
                                                     src={`https://auth.durlavparajuli.com.np/public/${service.image}`}
                                                     alt={service.title}
-                                                    className="mb-4 h-40 w-full rounded-lg object-cover"
+                                                    className=" mt-2 mb-4 h-40 w-full rounded-lg object-cover"
                                                 />
 
                                             )}
