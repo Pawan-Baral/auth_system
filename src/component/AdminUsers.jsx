@@ -28,6 +28,8 @@ function AdminUsers() {
 
     const [promotingId, setPromotingId] =
         useState(null);
+    const [promoteTarget, setPromoteTarget] =
+        useState(null);
 
     const [currentPage, setCurrentPage] =
         useState(1);
@@ -355,18 +357,30 @@ function AdminUsers() {
                                         >
                                             Delete
                                         </Button>
+                                        {user.role !== "admin" && (
+                                            <Button
+                                                type="button"
+                                                onClick={() => setPromoteTarget(user)}
+                                                disabled={promotingId === user.id}
+                                                className="bg-emerald-600 text-white hover:bg-emerald-700"
+                                            >
+                                                {promotingId === user.id
+                                                    ? "Promoting..."
+                                                    : "Promote"}
+                                            </Button>
+                                        )}
 
                                         {user.role !== "admin" && (
                                             <ConfirmDialog
-                                                open={Boolean(deleteTarget)}
-                                                title={`Delete ${deleteTarget?.title}?`}
-                                                description="This action cannot be undone."
-                                                confirmText="Delete"
-                                                onConfirm={() => {
-                                                    deleteServiceMutation.mutate(deleteTarget.id);
-                                                    setDeleteTarget(null);
+                                                open={Boolean(promoteTarget)}
+                                                title={`Promote ${promoteTarget?.fullName}?`}
+                                                description="This will give this user admin permissions."
+                                                confirmText="Promote"
+                                                onConfirm={async () => {
+                                                    await handlePromoteToAdmin(promoteTarget);
+                                                    setPromoteTarget(null);
                                                 }}
-                                                onCancel={() => setDeleteTarget(null)}
+                                                onCancel={() => setPromoteTarget(null)}
                                             />
                                         )}
                                     </div>
