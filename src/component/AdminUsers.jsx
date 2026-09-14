@@ -7,19 +7,7 @@ import {
 } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
-
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
+import ConfirmDialog from "@/component/ConfirmDialog";
 import {
     getAdminUsers,
     deleteAdminUser,
@@ -152,6 +140,9 @@ function AdminUsers() {
             setDeleteTarget(null);
         } catch (error) {
             toast.error(error.message);
+        }
+        finally {
+            setDeleteTarget(null);
         }
     }
 
@@ -366,58 +357,17 @@ function AdminUsers() {
                                         </Button>
 
                                         {user.role !== "admin" && (
-                                            <AlertDialog>
-                                                <AlertDialogTrigger
-                                                    asChild
-                                                >
-                                                    <Button
-                                                        type="button"
-                                                        disabled={
-                                                            promotingId ===
-                                                            user.id
-                                                        }
-                                                        className="bg-emerald-600 text-white"
-                                                    >
-                                                        {promotingId ===
-                                                            user.id
-                                                            ? "Promoting..."
-                                                            : "Promote"}
-                                                    </Button>
-                                                </AlertDialogTrigger>
-
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>
-                                                            Promote{" "}
-                                                            {
-                                                                user.fullName
-                                                            }?
-                                                        </AlertDialogTitle>
-
-                                                        <AlertDialogDescription>
-                                                            This will give
-                                                            this user admin
-                                                            permissions.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>
-                                                            Cancel
-                                                        </AlertDialogCancel>
-
-                                                        <AlertDialogAction
-                                                            onClick={() =>
-                                                                handlePromoteToAdmin(
-                                                                    user
-                                                                )
-                                                            }
-                                                        >
-                                                            Confirm
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
+                                            <ConfirmDialog
+                                                open={Boolean(deleteTarget)}
+                                                title={`Delete ${deleteTarget?.title}?`}
+                                                description="This action cannot be undone."
+                                                confirmText="Delete"
+                                                onConfirm={() => {
+                                                    deleteServiceMutation.mutate(deleteTarget.id);
+                                                    setDeleteTarget(null);
+                                                }}
+                                                onCancel={() => setDeleteTarget(null)}
+                                            />
                                         )}
                                     </div>
                                 </td>
@@ -458,39 +408,14 @@ function AdminUsers() {
                     </Button>
                 </div>
             </div>
-
-            <AlertDialog
+            <ConfirmDialog
                 open={Boolean(deleteTarget)}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setDeleteTarget(null);
-                    }
-                }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete {deleteTarget?.fullName}?
-                        </AlertDialogTitle>
-
-                        <AlertDialogDescription>
-                            This action cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
-
-                        <AlertDialogAction
-                            onClick={confirmDelete}
-                        >
-                            Delete
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                title={`Delete ${deleteTarget?.fullName}?`}
+                description="This action cannot be undone."
+                confirmText="Delete"
+                onConfirm={confirmDelete}
+                onCancel={() => setDeleteTarget(null)}
+            />
         </section>
     );
 }

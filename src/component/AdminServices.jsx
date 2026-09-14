@@ -5,17 +5,7 @@ import {
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
-
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/component/ConfirmDialog";
 import {
     createService,
     deleteService,
@@ -369,45 +359,17 @@ function AdminServices() {
                 </>
             )
             }
-            <AlertDialog
+            <ConfirmDialog
                 open={Boolean(deleteTarget)}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setDeleteTarget(null);
-                    }
+                title={`Delete ${deleteTarget?.title}?`}
+                description="This action cannot be undone."
+                confirmText="Delete"
+                onConfirm={() => {
+                    deleteServiceMutation.mutate(deleteTarget.id);
+                    setDeleteTarget(null);
                 }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete this service?
-                        </AlertDialogTitle>
-
-                        <AlertDialogDescription>
-                            This action cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
-
-                        <AlertDialogAction
-                            onClick={() => {
-                                deleteServiceMutation.mutate(
-                                    deleteTarget.id
-                                );
-
-                                setDeleteTarget(null);
-                            }}
-                        >
-                            Delete
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
-
+                onCancel={() => setDeleteTarget(null)}
+            />
         </section >
     );
 }

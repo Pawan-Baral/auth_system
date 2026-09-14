@@ -1,16 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
-
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/component/ConfirmDialog";
 
 import {
     useMutation,
@@ -226,42 +216,17 @@ function AdminMessages() {
                     <p>No contact messages found.</p>
                 )}
             </div>
-            <AlertDialog
+            <ConfirmDialog
                 open={Boolean(deleteTarget)}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        setDeleteTarget(null);
-                    }
+                title="Delete this message?"
+                description="This message will be permanently deleted."
+                confirmText="Delete"
+                onConfirm={() => {
+                    deleteMutation.mutate(deleteTarget);
+                    setDeleteTarget(null);
                 }}
-            >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Delete this message?
-                        </AlertDialogTitle>
-
-                        <AlertDialogDescription>
-                            This action cannot be undone.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>
-                            Cancel
-                        </AlertDialogCancel>
-
-                        <AlertDialogAction
-                            onClick={() => {
-                                deleteMutation.mutate(deleteTarget);
-
-                                setDeleteTarget(null);
-                            }}
-                        >
-                            Delete
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+                onCancel={() => setDeleteTarget(null)}
+            />
         </section>
     );
 }
