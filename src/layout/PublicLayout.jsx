@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { logoutUser } from "@/api/authApi";
 import { useAuth } from "@/context/AuthContext";
 import Footer from "../component/Footer";
-import { UserRound, LayoutDashboard, ShieldCheck, LogOut, X, } from "lucide-react";
+
 
 function PublicLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);

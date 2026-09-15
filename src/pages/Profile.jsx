@@ -117,7 +117,7 @@ function Profile() {
     if (isLoading) {
         return (
             <p className="p-6">
-                Loading profile...
+                <Loader />
             </p>
         );
     }

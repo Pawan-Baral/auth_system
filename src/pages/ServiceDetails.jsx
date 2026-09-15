@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getServiceByIdOrSlug } from "@/api/authApi";
 import { API_BASE_URL } from "../api/authApi";
+import Loader from "../component/Loader";
 
 function ServiceDetails() {
     const { idOrSlug } = useParams();
@@ -30,7 +31,7 @@ function ServiceDetails() {
     if (isLoading) {
         return (
             <main className="mx-auto max-w-5xl px-6 py-12">
-                <p>Loading service details...</p>
+                <Loader />
             </main>
         );
     }

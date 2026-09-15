@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { getDashboard } from "@/api/authApi";
 import { useAuth } from "@/context/AuthContext";
+import Loader from "../component/Loader";
 
 export default function Dashboard() {
     const { user: loggedInUser } = useAuth();
@@ -33,7 +34,7 @@ export default function Dashboard() {
     if (isLoading) {
         return (
             <main className="mx-auto max-w-6xl px-6 py-10">
-                <p>Loading dashboard...</p>
+                <Loader />
             </main>
         );
     }

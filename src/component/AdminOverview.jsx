@@ -7,6 +7,7 @@ import {
 } from "recharts";
 
 import { getAdminUsers } from "@/api/authApi";
+import Loader from "./Loader";
 
 function AdminOverview() {
     const {
@@ -31,9 +32,7 @@ function AdminOverview() {
     if (isPending) {
         return (
             <section className="mt-8">
-                <p className="text-slate-600">
-                    Loading statistics...
-                </p>
+                <Loader />
             </section>
         );
     }
