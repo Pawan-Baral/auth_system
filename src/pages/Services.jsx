@@ -1,19 +1,23 @@
 import { getServices } from "@/api/authApi";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { API_BASE_URL } from "../api/authApi";
+import Loader from "../component/Loader";
+import { toast } from "react-toastify";
 
 export default function Services() {
     const [services, setServices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
-    const API_URL = "https://auth.durlavparajuli.com.np";
 
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     useEffect(() => {
         async function loadServices() {
             try {
                 const data = await getServices();
 
                 console.log("Services:", data);
+                await delay(2000);
                 setServices(data);
             } catch (error) {
                 setError(error.message);
@@ -26,11 +30,15 @@ export default function Services() {
     }, []);
 
     if (isLoading) {
-        return <p>Loading services...</p>;
+        return (
+            <div className="flex min-h-[60vh] items-center justify-center">
+                <Loader />
+            </div>
+        );
     }
 
     if (error) {
-        return <p className="text-red-600">{error}</p>;
+        return toast.error(error.message);
     }
 
 
@@ -46,7 +54,7 @@ export default function Services() {
                     >
                         {service.image && (
                             <img
-                                src={`${API_URL}/public/${service.image}`}
+                                src={`${API_BASE_URL}/public/${service.image}`}
                                 alt={service.title}
                                 className="h-48 w-full object-cover"
                             />

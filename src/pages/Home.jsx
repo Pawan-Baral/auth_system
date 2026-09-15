@@ -1,48 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+import { getServices } from "@/api/authApi";
+import { API_BASE_URL } from "../api/authApi";
+import Loader from "../component/Loader";
 
 
 export default function Home() {
-    const { user, isAdmin } = useAuth();
 
-    const services = [
-        {
-            title: "UI/UX & Product Design",
-            description: "Crafting intuitive, user-centered interfaces and engaging digital experiences using modern design systems.",
-            keywords: ["Wireframing", "Figma Prototyping", "User Research", "Design Systems"],
-            link: "/services"
-        },
-        {
-            title: "Web Development",
-            description: "Building scalable, high-performance web applications tailored to enterprise and startup needs alike.",
-            keywords: ["React / Next.js", "Full-Stack Architecture", "REST & GraphQL APIs", "SEO & Performance"],
-            link: "/services"
-        },
-        {
-            title: "Mobile App Development",
-            description: "Delivering native and cross-platform mobile solutions designed for high speed and seamless usability.",
-            keywords: ["React Native", "iOS & Android", "Cross-Platform", "App Store Deployment"],
-            link: "/services"
-        },
-        {
-            title: "Software Testing & QA",
-            description: "Ensuring fault-tolerant, secure, and bug-free software releases through rigorous manual and automated testing.",
-            keywords: ["Automated Testing", "CI/CD Pipeline QA", "Performance & Security", "E2E Testing"],
-            link: "/services"
-        },
-        {
-            title: "Cloud & DevOps Solutions",
-            description: "Optimizing cloud infrastructure for maximum uptime, high scalability, and seamless continuous delivery.",
-            keywords: ["AWS / Azure", "Docker & Kubernetes", "CI/CD Integration", "Microservices"],
-            link: "/services"
-        },
-        {
-            title: "AI & Custom Software",
-            description: "Leveraging modern AI technologies and custom software solutions to automate and transform business workflows.",
-            keywords: ["LLM Integration", "Machine Learning", "Workflow Automation", "Enterprise Solutions"],
-            link: "/services"
+    const { user, isAdmin } = useAuth();
+    const [services, setServices] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    useEffect(() => {
+        async function loadServices() {
+            try {
+                const data = await getServices();
+
+                console.log("Services:", data);
+                setServices(data);
+            } catch (error) {
+                setError(error.message);
+            } finally {
+                setIsLoading(false);
+            }
         }
-    ];
+
+        loadServices();
+    }, []);
+
 
     return (
         <>
@@ -79,41 +66,39 @@ export default function Home() {
                                 End-to-end digital expertise tailored for growing businesses.
                             </p>
                         </div>
+                        {isLoading && (<Loader />)}
 
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {services.map((service, index) => (
+
+                        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            {services.map((service) => (
                                 <article
-                                    key={index}
-                                    className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-xl"
+                                    key={service.id}
+                                    onClick={() => navigate(`/services/${service.id}`)}
+                                    className="flex cursor-pointer flex-col overflow-hidden rounded-xl border bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md"
                                 >
-                                    <div>
-                                        <h3 className="text-xl font-bold text-slate-900">
-                                            {service.title}
-                                        </h3>
-                                        <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                                            {service.description}
-                                        </p>
-                                        <div className="mt-4 flex flex-wrap gap-1.5">
-                                            {service.keywords.map((kw, i) => (
-                                                <span
-                                                    key={i}
-                                                    className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600  hover:bg-blue-50 hover:text-blue-600 cursor-default"
-                                                >
-                                                    {kw}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
+                                    {service.image && (
+                                        <img
+                                            src={`${API_BASE_URL}/public/${service.image}`}
+                                            alt={service.title}
+                                            className="h-48 w-full object-cover"
+                                        />
+                                    )}
 
-                                    <Link
-                                        to={service.link}
-                                        className="group mt-6 inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-700"
-                                    >
-                                        Learn more
-                                        <span className="ml-1 transition-transform duration-200 group-hover:translate-x-1">
-                                            &rarr;
-                                        </span>
-                                    </Link>
+                                    <div className="p-6">
+                                        <h2 className="text-xl font-semibold">
+                                            {service.title}
+                                        </h2>
+
+                                        <p className="mt-3 text-gray-600">
+                                            {service.shortDescription || service.description}
+                                        </p>
+
+                                        <p className="mt-4 font-semibold">
+                                            {service.currency} {service.price}
+                                        </p>
+
+
+                                    </div>
                                 </article>
                             ))}
                         </div>

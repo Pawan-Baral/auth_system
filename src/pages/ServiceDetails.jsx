@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getServiceByIdOrSlug } from "@/api/authApi";
-
-const API_URL = "https://auth.durlavparajuli.com.np";
+import { API_BASE_URL } from "../api/authApi";
 
 function ServiceDetails() {
     const { idOrSlug } = useParams();
@@ -71,7 +70,7 @@ function ServiceDetails() {
             <article className=" flex flex-col  mt-6 overflow-hidden rounded-2xl border bg-white shadow-lg">
                 {service.image && (
                     <img
-                        src={`${API_URL}/public/${service.image}`}
+                        src={`${API_BASE_URL}/public/${service.image}`}
                         alt={service.title}
                         className="h-80 w-full object-cover"
                     />
@@ -168,26 +167,6 @@ function ServiceDetails() {
                                 No tags available.
                             </p>
                         )}
-                    </section>
-
-                    <section className="mt-8 border-t pt-6 text-sm text-slate-500">
-                        <p>
-                            Created:{" "}
-                            {service.createdAt
-                                ? new Date(
-                                    service.createdAt
-                                ).toLocaleDateString()
-                                : "N/A"}
-                        </p>
-
-                        <p className="mt-1">
-                            Last updated:{" "}
-                            {service.updatedAt
-                                ? new Date(
-                                    service.updatedAt
-                                ).toLocaleDateString()
-                                : "N/A"}
-                        </p>
                     </section>
                 </div>
             </article>
