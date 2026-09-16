@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+//https://auth.durlavparajuli.com.np
+//http://192.168.150.169:3000
 export const API_BASE_URL = "http://192.168.150.169:3000";
 const api = axios.create({
-    baseURL: "http://192.168.150.169:3000",
+    baseURL: "https://auth.durlavparajuli.com.np",
 });
 
 // Runs before every request made with this Axios instance.

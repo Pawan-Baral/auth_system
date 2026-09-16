@@ -11,10 +11,15 @@ import {
     deleteService,
     getServices,
     updateService,
+    API_BASE_URL,
 } from "@/api/authApi";
 
 import { Button } from "@/components/ui/button";
 import AdminServiceForm from "@/component/AdminServiceForm";
+import { useMemo } from "react";
+import DataTable from "@/component/DataTable";
+import Loader from "./Loader";
+
 
 function AdminServices() {
     const queryClient = useQueryClient();
@@ -31,7 +36,95 @@ function AdminServices() {
         queryKey: ["services"],
         queryFn: getServices,
     });
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 10;
+    const totalPages = Math.ceil(services.length / usersPerPage);
+    const startIndex = (currentPage - 1) * usersPerPage;
+    const paginatedUsers = services.slice(
+        startIndex,
+        startIndex + usersPerPage
+    );
+    const serviceColumns = useMemo(
+        () => [
+            {
+                accessorKey: "title",
+                header: "Title",
+            },
 
+            {
+                accessorKey: "shortDescription",
+                header: "Description",
+            },
+
+            {
+                accessorKey: "price",
+                header: "Price",
+                cell: ({ row }) => {
+                    const service = row.original;
+
+                    return service.price !== null &&
+                        service.price !== undefined
+                        ? `${service.currency || "USD"} ${service.price}`
+                        : "N/A";
+                },
+            },
+
+            {
+                accessorKey: "isActive",
+                header: "Status",
+                cell: ({ row }) => {
+                    const service = row.original;
+
+                    return (
+                        <span
+                            className={
+                                service.isActive
+                                    ? "rounded-full bg-green-100 px-3 py-1 text-green-700"
+                                    : "rounded-full bg-red-100 px-3 py-1 text-red-700"
+                            }
+                        >
+                            {service.isActive
+                                ? "Active"
+                                : "Inactive"}
+                        </span>
+                    );
+                },
+            },
+
+            {
+                id: "actions",
+                header: "Actions",
+                cell: ({ row }) => {
+                    const service = row.original;
+
+                    return (
+                        <div className="flex gap-2">
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    openEditForm(service)
+                                }
+                                className="bg-blue-600 text-white"
+                            >
+                                Edit
+                            </Button>
+
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    handleDelete(service)
+                                }
+                                className="bg-red-600 text-white"
+                            >
+                                Delete
+                            </Button>
+                        </div>
+                    );
+                },
+            },
+        ],
+        [openEditForm, handleDelete]
+    );
 
     const saveServiceMutation = useMutation({
         mutationFn: ({ serviceId, formData }) => {
@@ -163,9 +256,7 @@ function AdminServices() {
                 <>
 
                     {isPending && (
-                        <p className="mt-6">
-                            Loading services...
-                        </p>
+                        <Loader />
                     )}
 
                     {error && (
@@ -189,7 +280,7 @@ function AdminServices() {
                                             </h3>
                                             {(service.image) && (
                                                 <img
-                                                    src={`https://auth.durlavparajuli.com.np/public/${service.image}`}
+                                                    src={`${API_BASE_URL}/public/${service.image}`}
                                                     alt={service.title}
                                                     className=" mt-2 mb-4 h-40 w-full rounded-lg object-cover"
                                                 />
@@ -266,83 +357,41 @@ function AdminServices() {
                             ) : (
 
                                 <div className="mt-6 overflow-x-auto rounded-lg border bg-white">
-                                    <table className="w-full text-left text-sm">
-                                        <thead className="bg-slate-100 text-xs uppercase text-slate-700">
-                                            <tr>
-                                                <th className="px-4 py-3">Title</th>
-                                                <th className="px-4 py-3">Description</th>
-                                                <th className="px-4 py-3">Price</th>
-                                                <th className="px-4 py-3">Status</th>
-                                                <th className="px-4 py-3">Actions</th>
-                                            </tr>
-                                        </thead>
+                                    <DataTable
+                                        data={paginatedUsers}
+                                        columns={serviceColumns}
+                                    />
+                                    <div className="flex items-center justify-between border-t p-4">
+                                        <Button
+                                            type="button"
+                                            disabled={currentPage === 1}
+                                            onClick={() =>
+                                                setCurrentPage(
+                                                    (page) => page - 1
+                                                )
+                                            }
+                                        >
+                                            Previous
+                                        </Button>
 
-                                        <tbody>
-                                            {services.map((service) => (
-                                                <tr
-                                                    key={service.id}
-                                                    className="border-t hover:bg-slate-50"
-                                                >
-                                                    <td className="px-4 py-3 font-medium text-slate-900">
-                                                        {service.title}
-                                                    </td>
+                                        <span className="text-sm text-slate-600">
+                                            Page {currentPage} of {totalPages}
+                                        </span>
 
-                                                    <td className="px-4 py-3 text-slate-600">
-                                                        {service.shortDescription ||
-                                                            service.description}
-                                                    </td>
-
-                                                    <td className="px-4 py-3 font-medium">
-                                                        {service.price !== null &&
-                                                            service.price !== undefined
-                                                            ? `${service.currency || "USD"} ${service.price}`
-                                                            : "N/A"}
-                                                    </td>
-
-                                                    <td className="px-4 py-3">
-                                                        <span
-                                                            className={
-                                                                service.isActive
-                                                                    ? "rounded-full bg-green-100 px-3 py-1 text-sm text-green-700"
-                                                                    : "rounded-full bg-red-100 px-3 py-1 text-sm text-red-700"
-                                                            }
-                                                        >
-                                                            {service.isActive
-                                                                ? "Active"
-                                                                : "Inactive"}
-                                                        </span>
-                                                    </td>
-
-                                                    <td className="px-4 py-3">
-                                                        <div className="flex gap-2">
-                                                            <Button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    openEditForm(service)
-                                                                }
-                                                                className="bg-blue-600 text-white hover:bg-blue-700"
-                                                            >
-                                                                Edit
-                                                            </Button>
-
-                                                            <Button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    handleDelete(service)
-                                                                }
-                                                                disabled={
-                                                                    deleteServiceMutation.isPending
-                                                                }
-                                                                className="bg-red-600 text-white hover:bg-red-700"
-                                                            >
-                                                                Delete
-                                                            </Button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                        <Button
+                                            type="button"
+                                            disabled={
+                                                currentPage === totalPages
+                                            }
+                                            onClick={() =>
+                                                setCurrentPage(
+                                                    (page) => page + 1
+                                                )
+                                            }
+                                        >
+                                            Next
+                                        </Button>
+                                    </div>
                                 </div>
 
                             )}
@@ -351,10 +400,12 @@ function AdminServices() {
 
                     {!isPending &&
                         !error &&
-                        services.length === 0 && (
+                        services.length === 0 && (<>
                             <p className="mt-6 text-slate-500">
                                 No services found.
                             </p>
+                            toast.error(error.message);
+                        </>
                         )}
                 </>
             )

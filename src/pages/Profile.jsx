@@ -10,6 +10,7 @@ import {
 
 import ChangePasswordForm from "@/component/ChangePasswordForm";
 import { Button } from "@/components/ui/button";
+import Loader from "../component/Loader";
 
 const profileSchema = Yup.object({
     fullName: Yup.string()

@@ -8,11 +8,9 @@ import {
 
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/component/ConfirmDialog";
-import {
-    getAdminUsers,
-    deleteAdminUser,
-    updateAdminUser,
-} from "@/api/authApi";
+import { getAdminUsers, deleteAdminUser, updateAdminUser } from "@/api/authApi";
+import { useMemo } from "react";
+import DataTable from "@/component/DataTable";
 
 import { adminUserSchema } from "@/validation/adminUserSchema";
 
@@ -46,10 +44,76 @@ function AdminUsers() {
     });
 
     const storedUser = localStorage.getItem("user");
-
     const currentUser = storedUser
         ? JSON.parse(storedUser)
         : null;
+    const userColumns = useMemo(
+        () => [
+            {
+                accessorKey: "fullName",
+                header: "Name",
+
+            },
+            {
+                accessorKey: "email",
+                header: "Email",
+
+            },
+            {
+                accessorKey: "phone",
+                header: "Phone",
+            },
+            {
+                accessorKey: "role",
+                header: "Role",
+                cell: ({ row }) => {
+                    const user = row.original;
+
+                    return (
+                        <span className={user.role === "admin"
+                            ? "rounded-full bg-red-100 px-3 py-1 text-red-700"
+                            : "rounded-full bg-blue-100 px-3 py-1 text-blue-700"
+                        }
+                        > {user.role}
+                        </span>
+                    );
+                },
+            },
+            {
+                id: "actions",
+                header: "Actions",
+                cell: ({ row }) => {
+                    const user = row.original;
+                    return (
+                        <div className="flex flex-wrap gap-2">
+                            <Button onClick={() => handleStartEdit(user)} className="bg-blue-600  hover:bg-blue-700 text-white">Edit</Button>
+                            <Button onClick={() => handleDelete(user)} disabled={user.id === currentUser?.id} className="bg-red-600 hover:bg-red-700 text-white">Delete</Button>
+                            {user.role !== "admin" && (
+                                <Button
+                                    type="button"
+                                    onClick={() => {
+                                        setPromoteTarget(user);
+
+                                    }
+                                    }
+                                    disabled={
+                                        promotingId === user.id
+                                    }
+                                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                                >
+                                    {promotingId === user.id
+                                        ? "Promoting..."
+                                        : "Promote"}
+                                </Button>
+                            )}
+                        </div>
+                    )
+                }
+            }
+        ],
+        [currentUser, promotingId]
+    )
+
 
     const totalPages = Math.max(
         1,
@@ -277,118 +341,10 @@ function AdminUsers() {
             )}
 
             <div className="mt-6 overflow-x-auto rounded-lg border bg-white">
-                <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-100 text-slate-700">
-                        <tr>
-                            <th className="px-4 py-3">
-                                Name
-                            </th>
-
-                            <th className="px-4 py-3">
-                                Email
-                            </th>
-
-                            <th className="px-4 py-3">
-                                Phone
-                            </th>
-
-                            <th className="px-4 py-3">
-                                Role
-                            </th>
-
-                            <th className="px-4 py-3">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {paginatedUsers.map((user) => (
-                            <tr
-                                key={user.id}
-                                className="border-t hover:bg-slate-50"
-                            >
-                                <td className="px-4 py-3">
-                                    {user.fullName}
-                                </td>
-
-                                <td className="px-4 py-3">
-                                    {user.email}
-                                </td>
-
-                                <td className="px-4 py-3">
-                                    {user.phone}
-                                </td>
-
-                                <td className="px-4 py-3">
-                                    <span
-                                        className={
-                                            user.role === "admin"
-                                                ? "rounded-full bg-red-100 px-3 py-1 text-red-700"
-                                                : "rounded-full bg-blue-100 px-3 py-1 text-blue-700"
-                                        }
-                                    >
-                                        {user.role}
-                                    </span>
-                                </td>
-
-                                <td className="px-4 py-3">
-                                    <div className="flex flex-wrap gap-2">
-                                        <Button
-                                            type="button"
-                                            onClick={() =>
-                                                handleStartEdit(user)
-                                            }
-                                            className="bg-blue-600 text-white"
-                                        >
-                                            Edit
-                                        </Button>
-
-                                        <Button
-                                            type="button"
-                                            onClick={() =>
-                                                handleDelete(user)
-                                            }
-                                            disabled={
-                                                user.id ===
-                                                currentUser?.id
-                                            }
-                                            className="bg-red-600 text-white"
-                                        >
-                                            Delete
-                                        </Button>
-                                        {user.role !== "admin" && (
-                                            <Button
-                                                type="button"
-                                                onClick={() => setPromoteTarget(user)}
-                                                disabled={promotingId === user.id}
-                                                className="bg-emerald-600 text-white hover:bg-emerald-700"
-                                            >
-                                                {promotingId === user.id
-                                                    ? "Promoting..."
-                                                    : "Promote"}
-                                            </Button>
-                                        )}
-
-                                        {user.role !== "admin" && (
-                                            <ConfirmDialog
-                                                open={Boolean(promoteTarget)}
-                                                title={`Promote ${promoteTarget?.fullName}?`}
-                                                description="This will give this user admin permissions."
-                                                confirmText="Promote"
-                                                onConfirm={async () => {
-                                                    await handlePromoteToAdmin(promoteTarget);
-                                                    setPromoteTarget(null);
-                                                }}
-                                                onCancel={() => setPromoteTarget(null)}
-                                            />
-                                        )}
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <DataTable
+                    data={paginatedUsers}
+                    columns={userColumns}
+                />
 
                 <div className="flex items-center justify-between border-t p-4">
                     <Button
@@ -429,6 +385,17 @@ function AdminUsers() {
                 confirmText="Delete"
                 onConfirm={confirmDelete}
                 onCancel={() => setDeleteTarget(null)}
+            />
+            <ConfirmDialog
+                open={Boolean(promoteTarget)}
+                title={`Promote ${promoteTarget?.fullName}?`}
+                description="This will give this user admin permissions."
+                confirmText="Promote"
+                onConfirm={async () => {
+                    await handlePromoteToAdmin(promoteTarget);
+                    setPromoteTarget(null);
+                }}
+                onCancel={() => setPromoteTarget(null)}
             />
         </section>
     );
