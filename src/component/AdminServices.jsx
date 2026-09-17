@@ -19,6 +19,7 @@ import AdminServiceForm from "@/component/AdminServiceForm";
 import { useMemo } from "react";
 import DataTable from "@/component/DataTable";
 import Loader from "./Loader";
+import { LayoutGrid, Table, Plus, Pencil, Trash2 } from "lucide-react";
 
 
 function AdminServices() {
@@ -222,7 +223,7 @@ function AdminServices() {
                                 onClick={openCreateForm}
                                 className="bg-red-600 text-white hover:bg-red-700"
                             >
-                                Add service
+                                <><Plus /><span>Add service</span></>
                             </Button>
 
                             <Button
@@ -237,8 +238,11 @@ function AdminServices() {
                                 className="bg-blue-600 text-white"
                             >
                                 {viewMode === "cards"
-                                    ? "Table View"
-                                    : "Card View"}
+                                    ? <><Table /> <span>Table</span></>
+                                    : <>
+                                        <LayoutGrid className="h-4 w-4" />
+                                        <span>Cards</span>
+                                    </>}
                             </Button>
                         </div>
                     )}
@@ -333,7 +337,7 @@ function AdminServices() {
                                                     }
                                                     className="bg-blue-600 text-white hover:bg-blue-700"
                                                 >
-                                                    Edit
+                                                    <Pencil />
                                                 </Button>
 
                                                 <Button
@@ -348,7 +352,7 @@ function AdminServices() {
                                                     }
                                                     className="bg-red-600 text-white hover:bg-red-700"
                                                 >
-                                                    Delete
+                                                    <Trash2 />
                                                 </Button>
                                             </div>
                                         </article>
