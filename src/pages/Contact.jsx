@@ -1,6 +1,7 @@
 import { useFormik } from "formik";
 import { submitContact } from "@/api/authApi";
 import { contactSchema } from "../validation/contactSchema";
+import { toast } from "react-toastify";
 
 
 export default function Contact() {
@@ -22,11 +23,13 @@ export default function Contact() {
                     type: "success",
                     message: response.message || "Message sent successfully",
                 });
+                toast.success(response.message || "Message sent successfully!");
             } catch (error) {
                 setStatus({
                     type: "error",
                     message: error.message,
                 });
+                toast.error(response.message || "Ops something went wrong !");
             } finally {
                 setSubmitting(false);
             }
@@ -80,6 +83,11 @@ export default function Contact() {
                             onBlur={formik.handleBlur}
                             className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500"
                         />
+                        {formik.touched.name && formik.errors.name && (
+                            <p className="text-sm text-red-600">
+                                {formik.errors.name}
+                            </p>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -123,6 +131,11 @@ export default function Contact() {
                             onBlur={formik.handleBlur}
                             className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-500"
                         />
+                        {formik.touched.subject && formik.errors.subject && (
+                            <p className="text-sm text-red-600">
+                                {formik.errors.subject}
+                            </p>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -142,6 +155,11 @@ export default function Contact() {
                             onBlur={formik.handleBlur}
                             className="resize-none rounded-lg border border-slate-300 p-3 outline-none focus:border-blue-500"
                         />
+                        {formik.touched.message && formik.errors.message && (
+                            <p className="text-sm text-red-600">
+                                {formik.errors.message}
+                            </p>
+                        )}
                     </div>
 
                     <button
