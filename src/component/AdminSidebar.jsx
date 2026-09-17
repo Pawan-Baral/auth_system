@@ -20,12 +20,9 @@ function AdminSidebar({
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={
-                                activeSection === "overview"
-                            }
-                            onClick={() =>
-                                onSectionChange("overview")
-                            }
+                            className="transition-colors hover:bg-blue-100 hover:text-blue-700 data-active:bg-blue-600 data-active:text-white"
+                            isActive={activeSection === "overview"}
+                            onClick={() => onSectionChange("overview")}
                         >
                             Overview
                         </SidebarMenuButton>
@@ -33,12 +30,10 @@ function AdminSidebar({
 
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={
-                                activeSection === "users"
-                            }
-                            onClick={() =>
-                                onSectionChange("users")
-                            }
+
+                            className="transition-colors hover:bg-blue-100 hover:text-blue-700 data-active:bg-blue-600 data-active:text-white"
+                            isActive={activeSection === "users"}
+                            onClick={() => onSectionChange("users")}
                         >
                             Users
                         </SidebarMenuButton>
@@ -46,12 +41,9 @@ function AdminSidebar({
 
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={
-                                activeSection === "messages"
-                            }
-                            onClick={() =>
-                                onSectionChange("messages")
-                            }
+                            className="transition-colors hover:bg-blue-100 hover:text-blue-700 data-active:bg-blue-600 data-active:text-white"
+                            isActive={activeSection === "messages"}
+                            onClick={() => onSectionChange("messages")}
                         >
                             Messages
                         </SidebarMenuButton>
@@ -59,12 +51,9 @@ function AdminSidebar({
 
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={
-                                activeSection === "services"
-                            }
-                            onClick={() =>
-                                onSectionChange("services")
-                            }
+                            className="transition-colors hover:bg-blue-100 hover:text-blue-700 data-active:bg-blue-600 data-active:text-white"
+                            isActive={activeSection === "services"}
+                            onClick={() => onSectionChange("services")}
                         >
                             Services
                         </SidebarMenuButton>
