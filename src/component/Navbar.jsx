@@ -10,7 +10,7 @@ export default function Navbar() {
 
     return (<>
 
-        <div className="grid items-center grid-cols-[1fr_auto_1fr] h-16 px-6">
+        <div className="grid items-center grid-cols-[1fr_auto_1fr] h-16 px-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900">
             <div className="flex items-center gap-2">
 
                 <img
@@ -23,9 +23,9 @@ export default function Navbar() {
             <nav className=" ">
                 <ul className="flex items-center   gap-6 list-none">
 
-                    <li> <Link to="/home"  >Home</Link></li>
-                    <li> <Link to="/services"  >Services</Link></li>
-                    <li><Link to="/contact"  >Contact</Link></li>
+                    <li> <Link to="/home" className="text-slate-200 transition-colors hover:text-white" >Home</Link></li>
+                    <li> <Link to="/services" className="text-slate-200 transition-colors hover:text-white"  >Services</Link></li>
+                    <li><Link to="/contact" className="text-slate-200 transition-colors hover:text-white" >Contact</Link></li>
                 </ul>
             </nav>
             <div className="flex items-center justify-self-end gap-3">
