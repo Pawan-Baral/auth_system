@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+
 //https://auth.durlavparajuli.com.np
 //http://192.168.150.169:3000
 export const API_BASE_URL = "http://192.168.150.169:3000";
@@ -526,4 +526,8 @@ export async function getServiceByIdOrSlug(idOrSlug) {
             message || "Unable to load service"
         );
     }
+}
+export async function getAdminUser(userId) {
+    const response = await api.get(`/api/admin/users/${userId}`);
+    return response.data;
 }

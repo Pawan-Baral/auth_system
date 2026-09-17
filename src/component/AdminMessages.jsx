@@ -173,8 +173,9 @@ function AdminMessages() {
             },
         ],
         [
-            readMutation.isPending,
-            deleteMutation.isPending,
+            readMutation,
+            deleteMutation,
+            readMutation
         ]
     );
     if (contactsQuery.isPending) {

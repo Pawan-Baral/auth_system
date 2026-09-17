@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { getServices } from "@/api/authApi";
 import { API_BASE_URL } from "../api/authApi";
 import Loader from "../component/Loader";
-
+import { toast } from "react-toastify";
 
 export default function Home() {
 
     const { user, isAdmin } = useAuth();
     const [services, setServices] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState("");
+
     const navigate = useNavigate();
     useEffect(() => {
         async function loadServices() {
@@ -21,7 +21,7 @@ export default function Home() {
                 console.log("Services:", data);
                 setServices(data);
             } catch (error) {
-                setError(error.message);
+                toast.error(error.message);
             } finally {
                 setIsLoading(false);
             }

@@ -55,17 +55,6 @@ export default function Contact() {
                     onSubmit={formik.handleSubmit}
                     className="mt-10 flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
                 >
-                    {formik.status && (
-                        <p
-                            className={
-                                formik.status.type === "success"
-                                    ? "text-sm text-green-600"
-                                    : "text-sm text-red-600"
-                            }
-                        >
-                            {formik.status.message}
-                        </p>
-                    )}
                     <div className="flex flex-col gap-2">
                         <label
                             htmlFor="name"
@@ -167,7 +156,7 @@ export default function Contact() {
                         disabled={formik.isSubmitting}
                         className="h-11 rounded-lg bg-blue-600 font-semibold text-white transition hover:bg-blue-700"
                     >
-                        Send Message
+                        {formik.isSubmitting ? "Sending" : "Send Message"}
                     </button>
                 </form>
             </div>

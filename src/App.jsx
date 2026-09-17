@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import { ToastContainer } from "react-toastify";
 import PublicLayout from "./layout/PublicLayout";
 import ServiceDetails from "@/pages/ServiceDetails";
+import AdminUserEdit from "./pages/AdminUserEdit";
 function App() {
     return (
         <BrowserRouter>
@@ -52,6 +53,10 @@ function App() {
                                 <Route
                                     path="/admin"
                                     element={<AdminDashboard />}
+                                />
+                                <Route
+                                    path="/admin/users/:id/edit"
+                                    element={<AdminUserEdit />}
                                 />
                             </Route>
                         </Route>

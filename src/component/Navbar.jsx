@@ -12,13 +12,17 @@ export default function Navbar() {
 
         <div className="grid items-center grid-cols-[1fr_auto_1fr] h-16 px-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900">
             <div className="flex items-center gap-2">
+                <Link to="/home">
+                    <img
+                        src="/authentication-system-logo.svg"
+                        alt="Auth System"
+                        className="h-10 w-10"
+                    />
+                </Link>
+                <span className="font-semibold text-white">
+                    Auth System
+                </span>
 
-                <img
-                    src="/authentication-system-logo.svg"
-                    alt="Auth System"
-                    className="h-10 w-10"
-                />
-                <span>Auth System</span>
             </div>
             <nav className=" ">
                 <ul className="flex items-center   gap-6 list-none">
