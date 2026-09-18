@@ -17,7 +17,7 @@ export default function Services() {
                 const data = await getServices();
 
                 console.log("Services:", data);
-                await delay(2000);
+                await delay(1500);
                 setServices(data);
             } catch (error) {
                 setError(error.message);

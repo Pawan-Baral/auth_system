@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import ConfirmDialog from "@/component/ConfirmDialog";
 import Loader from "./Loader";
+import { Trash2 } from "lucide-react";
 
 import {
     useMutation,
@@ -165,7 +166,7 @@ function AdminMessages() {
                                 }
                                 className="bg-red-600 text-white hover:bg-red-700"
                             >
-                                Delete
+                                <Trash2 />
                             </Button>
                         </div>
                     );

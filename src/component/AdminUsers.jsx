@@ -14,6 +14,7 @@ import DataTable from "@/component/DataTable";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Pencil, Trash2, TrendingUp, ShieldCheck } from "lucide-react";
 
 function AdminUsers() {
     const queryClient = useQueryClient();
@@ -82,8 +83,8 @@ function AdminUsers() {
                     const user = row.original;
                     return (
                         <div className="flex flex-wrap gap-2">
-                            <Button onClick={() => navigate(`/admin/users/${user.id}/edit`)} className="bg-blue-600  hover:bg-blue-700 text-white">Edit</Button>
-                            <Button onClick={() => handleDelete(user)} disabled={user.id === currentUser?.id} className="bg-red-600 hover:bg-red-700 text-white">Delete</Button>
+                            <Button onClick={() => navigate(`/admin/users/${user.id}/edit`)} className="bg-blue-600  hover:bg-blue-700 text-white"> <Pencil /></Button>
+                            <Button onClick={() => handleDelete(user)} disabled={user.id === currentUser?.id} className="bg-red-600 hover:bg-red-700 text-white"><Trash2 /></Button>
                             {user.role !== "admin" && (
                                 <Button
                                     type="button"
@@ -99,7 +100,7 @@ function AdminUsers() {
                                 >
                                     {promotingId === user.id
                                         ? "Promoting..."
-                                        : "Promote"}
+                                        : <ShieldCheck />}
                                 </Button>
                             )}
                         </div>
@@ -189,6 +190,7 @@ function AdminUsers() {
     }
 
     if (error) {
+        toast.error(error.message);
         return (
             <section className="mt-8">
                 <p className="text-red-600">

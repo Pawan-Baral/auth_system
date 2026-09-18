@@ -107,7 +107,7 @@ function AdminServices() {
                                 }
                                 className="bg-blue-600 text-white"
                             >
-                                Edit
+                                <Pencil />
                             </Button>
 
                             <Button
@@ -117,7 +117,7 @@ function AdminServices() {
                                 }
                                 className="bg-red-600 text-white"
                             >
-                                Delete
+                                <Trash2 />
                             </Button>
                         </div>
                     );

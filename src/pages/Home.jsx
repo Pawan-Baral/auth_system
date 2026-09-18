@@ -104,7 +104,7 @@ export default function Home() {
                         </div>
                     </section>
 
-                    {/* Admin Dashboard Card */}
+                    {/* Admin Dashboard Card
                     {isAdmin && (
                         <section className="rounded-2xl border border-red-200 bg-red-50/70 p-6 shadow-sm">
                             <h3 className="text-xl font-bold text-red-800">
@@ -120,7 +120,7 @@ export default function Home() {
                                 Open Admin Dashboard &rarr;
                             </Link>
                         </section>
-                    )}
+                    )} */}
 
                 </div>
             </main>
