@@ -77,6 +77,7 @@ export default function UserDropdownMenu() {
 
                 <DropdownMenuGroup>
                     <DropdownMenuItem
+                        className="transition-colors hover:bg-slate-100 hover:text-blue-700"
                         onClick={() => navigate("/profile")}
                     >
                         <UserRound className="mr-2 h-4 w-4" />
@@ -84,6 +85,7 @@ export default function UserDropdownMenu() {
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
+                        className="transition-colors hover:bg-slate-100 hover:text-blue-700"
                         onClick={() => navigate("/dashboard")}
                     >
                         <LayoutDashboard className="mr-2 h-4 w-4" />
@@ -92,6 +94,7 @@ export default function UserDropdownMenu() {
 
                     {isAdmin && (
                         <DropdownMenuItem
+                            className="transition-colors hover:bg-slate-100 hover:text-blue-700"
                             onClick={() => navigate("/admin")}
                         >
                             <ShieldCheck className="mr-2 h-4 w-4" />
@@ -104,7 +107,7 @@ export default function UserDropdownMenu() {
 
                 <DropdownMenuGroup>
                     <DropdownMenuItem
-                        variant="destructive"
+                        className="transition-colors hover:bg-slate-100 hover:text-red-700"
                         onClick={handleLogout}
                     >
                         <LogOut className="mr-2 h-4 w-4" />
