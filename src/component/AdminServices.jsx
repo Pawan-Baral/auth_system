@@ -1,0 +1,432 @@
+import { useState } from "react";
+import { toast } from "react-toastify";
+import {
+    useMutation,
+    useQuery,
+    useQueryClient,
+} from "@tanstack/react-query";
+import ConfirmDialog from "@/component/ConfirmDialog";
+import {
+    createService,
+    deleteService,
+    getServices,
+    updateService,
+    API_BASE_URL,
+} from "@/api/authApi";
+
+import { Button } from "@/components/ui/button";
+import AdminServiceForm from "@/component/AdminServiceForm";
+import { useMemo } from "react";
+import DataTable from "@/component/DataTable";
+import Loader from "./Loader";
+import { LayoutGrid, Table, Plus, Pencil, Trash2 } from "lucide-react";
+
+
+function AdminServices() {
+    const queryClient = useQueryClient();
+    const [editingService, setEditingService] = useState(null);
+    const [viewMode, setViewMode] = useState("cards");
+    const [showForm, setShowForm] = useState(false);
+    const [deleteTarget, setDeleteTarget] = useState(null);
+
+    const {
+        data: services = [],
+        isPending,
+        error,
+    } = useQuery({
+        queryKey: ["services"],
+        queryFn: getServices,
+    });
+    const [currentPage, setCurrentPage] = useState(1);
+    const usersPerPage = 10;
+    const totalPages = Math.ceil(services.length / usersPerPage);
+    const startIndex = (currentPage - 1) * usersPerPage;
+    const paginatedUsers = services.slice(
+        startIndex,
+        startIndex + usersPerPage
+    );
+    const serviceColumns = useMemo(
+        () => [
+            {
+                accessorKey: "title",
+                header: "Title",
+            },
+
+            {
+                accessorKey: "shortDescription",
+                header: "Description",
+            },
+
+            {
+                accessorKey: "price",
+                header: "Price",
+                cell: ({ row }) => {
+                    const service = row.original;
+
+                    return service.price !== null &&
+                        service.price !== undefined
+                        ? `${service.currency || "USD"} ${service.price}`
+                        : "N/A";
+                },
+            },
+
+            {
+                accessorKey: "isActive",
+                header: "Status",
+                cell: ({ row }) => {
+                    const service = row.original;
+
+                    return (
+                        <span
+                            className={
+                                service.isActive
+                                    ? "rounded-full bg-green-100 px-3 py-1 text-green-700"
+                                    : "rounded-full bg-red-100 px-3 py-1 text-red-700"
+                            }
+                        >
+                            {service.isActive
+                                ? "Active"
+                                : "Inactive"}
+                        </span>
+                    );
+                },
+            },
+
+            {
+                id: "actions",
+                header: "Actions",
+                cell: ({ row }) => {
+                    const service = row.original;
+
+                    return (
+                        <div className="flex gap-2">
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    openEditForm(service)
+                                }
+                                className="bg-blue-600 text-white"
+                            >
+                                <Pencil />
+                            </Button>
+
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    handleDelete(service)
+                                }
+                                className="bg-red-600 text-white"
+                            >
+                                <Trash2 />
+                            </Button>
+                        </div>
+                    );
+                },
+            },
+        ],
+        [openEditForm, handleDelete]
+    );
+
+    const saveServiceMutation = useMutation({
+        mutationFn: ({ serviceId, formData }) => {
+            if (serviceId) {
+                return updateService(
+                    serviceId,
+                    formData
+                );
+            }
+
+            return createService(formData);
+        },
+
+        onSuccess: async (response) => {
+            await queryClient.invalidateQueries({
+                queryKey: ["services"],
+            });
+
+            setEditingService(null);
+            setShowForm(false);
+
+            toast.success(
+                response?.message ||
+                "Service saved successfully"
+            );
+        },
+
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+
+
+
+    const deleteServiceMutation = useMutation({
+        mutationFn: deleteService,
+
+        onSuccess: async (response) => {
+            await queryClient.invalidateQueries({
+                queryKey: ["services"],
+            });
+
+            toast.success(
+                response?.message ||
+                "Service deleted successfully"
+            );
+        },
+
+        onError: (error) => {
+            toast.error(error.message);
+        },
+    });
+
+    function openCreateForm() {
+        setEditingService(null);
+        setShowForm(true);
+    }
+
+    function openEditForm(service) {
+        setEditingService(service);
+        setShowForm(true);
+    }
+
+    function closeForm() {
+        setEditingService(null);
+        setShowForm(false);
+    }
+    async function handleSaveService(formData, serviceId) {
+        return saveServiceMutation.mutateAsync({
+            serviceId,
+            formData,
+        });
+    }
+
+    function handleDelete(service) {
+        setDeleteTarget(service);
+
+    }
+
+    return (
+        <section>
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-2xl font-semibold text-slate-900">
+                        Services
+                    </h2>
+                </div>
+
+                <div className="flex items-center justify-between">
+
+                    {!showForm && (
+                        <div className="flex gap-2">
+                            <Button
+                                type="button"
+                                onClick={openCreateForm}
+                                className="bg-red-600 text-white hover:bg-red-700"
+                            >
+                                <><Plus /><span>Add service</span></>
+                            </Button>
+
+                            <Button
+                                type="button"
+                                onClick={() =>
+                                    setViewMode(
+                                        viewMode === "cards"
+                                            ? "table"
+                                            : "cards"
+                                    )
+                                }
+                                className="bg-blue-600 text-white"
+                            >
+                                {viewMode === "cards"
+                                    ? <><Table /> <span>Table</span></>
+                                    : <>
+                                        <LayoutGrid className="h-4 w-4" />
+                                        <span>Cards</span>
+                                    </>}
+                            </Button>
+                        </div>
+                    )}
+                </div>
+
+            </div>
+
+            {showForm ? (
+                <AdminServiceForm
+                    service={editingService}
+                    onSave={handleSaveService}
+                    onCancel={closeForm}
+                />
+            ) : (
+                <>
+
+                    {isPending && (
+                        <Loader />
+                    )}
+
+                    {error && (
+                        <p className="mt-6 text-red-600">
+                            {error.message}
+                        </p>
+                    )}
+
+                    {!isPending && !error && (
+                        <>
+                            {viewMode === "cards" ? (
+                                /* Keep your existing cards grid container here */
+                                <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    {services.map((service) => (
+                                        <article
+                                            key={service.id}
+                                            className="rounded-xl border bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1  hover:shadow-lg "
+                                        >
+                                            <h3 className="text-xl font-semibold">
+                                                {service.title}
+                                            </h3>
+                                            {(service.image) && (
+                                                <img
+                                                    src={`${API_BASE_URL}/public/${service.image}`}
+                                                    alt={service.title}
+                                                    className=" mt-2 mb-4 h-40 w-full rounded-lg object-cover"
+                                                />
+
+                                            )}
+                                            {console.log(service.image)}
+
+                                            <p className="mt-2 text-sm text-slate-500">
+                                                {
+                                                    service.shortDescription
+                                                }
+                                            </p>
+
+                                            <p className="mt-4 text-slate-700">
+                                                {service.description}
+                                            </p>
+                                            <p className="mt-4 text-lg font-bold text-slate-900">
+                                                {service.price !== null &&
+                                                    service.price !== undefined
+                                                    ? `${service.currency || "USD"} ${service.price}`
+                                                    : "Price not provided"}
+                                            </p>
+                                            <span
+                                                className={
+                                                    service.isActive
+                                                        ? "rounded-full bg-green-100 px-3 py-1 text-sm text-green-700"
+                                                        : "rounded-full bg-red-100 px-3 py-1 text-sm text-red-700"
+                                                }
+                                            >
+                                                {service.isActive ? "Active" : "Inactive"}
+                                            </span>
+                                            <div className="mt-4 flex flex-wrap gap-2">
+                                                {service.tags?.map((tag) => (
+                                                    <span
+                                                        key={tag}
+                                                        className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700"
+                                                    >
+                                                        #{tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+
+                                            <div className="mt-5 flex gap-2">
+                                                <Button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        openEditForm(
+                                                            service
+                                                        )
+                                                    }
+                                                    className="bg-blue-600 text-white hover:bg-blue-700"
+                                                >
+                                                    <Pencil />
+                                                </Button>
+
+                                                <Button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            service
+                                                        )
+                                                    }
+                                                    disabled={
+                                                        deleteServiceMutation.isPending
+                                                    }
+                                                    className="bg-red-600 text-white hover:bg-red-700"
+                                                >
+                                                    <Trash2 />
+                                                </Button>
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
+                            ) : (
+
+                                <div className="mt-6 overflow-x-auto rounded-lg border bg-white">
+                                    <DataTable
+                                        data={paginatedUsers}
+                                        columns={serviceColumns}
+                                    />
+                                    <div className="flex items-center justify-between border-t p-4">
+                                        <Button
+                                            type="button"
+                                            disabled={currentPage === 1}
+                                            onClick={() =>
+                                                setCurrentPage(
+                                                    (page) => page - 1
+                                                )
+                                            }
+                                        >
+                                            Previous
+                                        </Button>
+
+                                        <span className="text-sm text-slate-600">
+                                            Page {currentPage} of {totalPages}
+                                        </span>
+
+                                        <Button
+                                            type="button"
+                                            disabled={
+                                                currentPage === totalPages
+                                            }
+                                            onClick={() =>
+                                                setCurrentPage(
+                                                    (page) => page + 1
+                                                )
+                                            }
+                                        >
+                                            Next
+                                        </Button>
+                                    </div>
+                                </div>
+
+                            )}
+                        </>
+                    )}
+
+                    {!isPending &&
+                        !error &&
+                        services.length === 0 && (<>
+                            <p className="mt-6 text-slate-500">
+                                No services found.
+                            </p>
+                            toast.error(error.message);
+                        </>
+                        )}
+                </>
+            )
+            }
+            <ConfirmDialog
+                open={Boolean(deleteTarget)}
+                title={`Delete ${deleteTarget?.title}?`}
+                description="This action cannot be undone."
+                confirmText="Delete"
+                onConfirm={() => {
+                    deleteServiceMutation.mutate(deleteTarget.id);
+                    setDeleteTarget(null);
+                }}
+                onCancel={() => setDeleteTarget(null)}
+            />
+        </section >
+    );
+}
+
+export default AdminServices;

@@ -6,9 +6,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "@/api/authApi"
 import { useFormik } from "formik";
 import { loginSchema } from "../validation/authSchema";
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 function Login() {
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const { startSession } = useAuth();
     const Formik = useFormik({
         initialValues: {
             email: "",
@@ -22,22 +28,23 @@ function Login() {
                 const data = await loginUser(values);
 
                 console.log("Login response: ", data);
-                localStorage.setItem("accessToken", data.accessToken);
-                localStorage.setItem("refreshToken", data.refreshToken);
-                localStorage.setItem("user", JSON.stringify(data.user));
-                setStatus({
-                    type: "success",
-                    message: data.message || "Successful login!",
-                })
-                navigate("/dashboard", { replace: true })
+                startSession(data);
+
+                toast.success(
+                    data.message || "Login successful"
+                );
+
+                navigate("/home", { replace: true });
             }
             catch (error) {
                 console.error("Error Message ", error);
+                console.log(error);
+                toast.error(error.message);
                 setStatus({
                     type: "error",
                     message: error.message,
                 })
-                alert(error.message);
+
             }
             finally {
                 setSubmitting(false);
@@ -80,16 +87,36 @@ function Login() {
                     <label htmlFor="password" className="text-sm font-medium text-slate-700">
                         Password
                     </label>
-                    <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={Formik.values.password}
-                        onChange={Formik.handleChange}
-                        onBlur={Formik.handleBlur}
-                        className="h-11 border-slate-300 bg-white px-3 text-slate-900 placeholder:text-slate-400 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-400"
-                    />
+                    <div className="relative">
+
+                        <Input
+                            id="password"
+                            name="password"
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            value={Formik.values.password}
+                            onChange={Formik.handleChange}
+                            onBlur={Formik.handleBlur}
+                            className="h-11 border-slate-300 bg-white px-3 text-slate-900 placeholder:text-slate-400 dark:bg-white dark:text-slate-900 dark:placeholder:text-slate-400"
+                        />
+                        <button
+                            type="button"
+                            onClick={() =>
+                                setShowPassword(
+                                    (currentValue) =>
+                                        !currentValue
+                                )
+                            }
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-800"
+                        >
+                            {showPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                            ) : (
+                                <Eye className="h-5 w-5" />
+                            )}
+                        </button>
+
+                    </div>
                 </div>
 
                 <Link
