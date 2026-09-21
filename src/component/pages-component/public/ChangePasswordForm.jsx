@@ -2,8 +2,10 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 
-import { changePassword } from "@/api/authApi";
+import { changePassword } from "@/service/authApi";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const changePasswordSchema = Yup.object({
     currentPassword: Yup.string().required(
@@ -137,6 +139,7 @@ function PasswordInput({
     label,
     autoComplete,
 }) {
+    const [showPassword, setShowPassword] = useState(false);
     const hasError =
         formik.touched[name] &&
         formik.errors[name];
@@ -150,16 +153,33 @@ function PasswordInput({
                 {label}
             </label>
 
-            <input
-                id={name}
-                name={name}
-                type="password"
-                autoComplete={autoComplete}
-                value={formik.values[name]}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                className="mt-1 w-full rounded-md border border-slate-300 p-2 outline-none focus:border-blue-500"
-            />
+            <div className="relative">
+                <input
+                    id={name}
+                    name={name}
+                    type={showPassword ? "text" : "password"}
+                    autoComplete={autoComplete}
+                    value={formik.values[name]}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className="mt-1 w-full rounded-md border border-slate-300 p-2 pr-10 outline-none focus:border-blue-500"
+                />
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        setShowPassword((visible) => !visible)
+                    }
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+                    aria-label={
+                        showPassword
+                            ? `Hide ${label}`
+                            : `Show ${label}`
+                    }
+                >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+            </div>
 
             {hasError && (
                 <p className="mt-1 text-sm text-red-600">

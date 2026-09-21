@@ -7,8 +7,8 @@ import {
     LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "@/api/authApi";
-import { useAuth } from "../context/AuthContext";
+import { logoutUser } from "@/service/authApi";
+import { useAuth } from "@/providers/AuthContext";
 import {
     DropdownMenu,
     DropdownMenuContent,

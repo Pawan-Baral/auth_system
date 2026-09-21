@@ -6,8 +6,8 @@ import {
     Pie,
 } from "recharts";
 
-import { getAdminUsers } from "@/api/authApi";
-import Loader from "./Loader";
+import { getAdminUsers } from "@/service/authApi";
+import Loader from "@/component/functional/Loader";
 
 function AdminOverview() {
     const {

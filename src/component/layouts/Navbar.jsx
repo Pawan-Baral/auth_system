@@ -1,8 +1,8 @@
 
 
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import UserDropdownMenu from "./UserDropdownMenu";
+import { useAuth } from "@/providers/AuthContext";
+import UserDropdownMenu from "@/component/pages-component/public/UserDropdownMenu.jsx";
 export default function Navbar() {
     const { user } = useAuth();
     const navigate = useNavigate();

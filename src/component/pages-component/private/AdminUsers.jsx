@@ -6,15 +6,15 @@ import {
 } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
-import ConfirmDialog from "@/component/ConfirmDialog";
-import { getAdminUsers, deleteAdminUser, updateAdminUser } from "@/api/authApi";
+import ConfirmDialog from "@/component/functional/ConfirmDialog";
+import { getAdminUsers, deleteAdminUser, updateAdminUser } from "@/service/authApi";
 import { useMemo } from "react";
-import DataTable from "@/component/DataTable";
+import DataTable from "@/component/functional/DataTable";
 
-import Loader from "./Loader";
+import Loader from "@/component/functional/Loader";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { Pencil, Trash2, TrendingUp, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/providers/AuthContext";
+import { Pencil, Trash2, ShieldCheck } from "lucide-react";
 
 function AdminUsers() {
     const queryClient = useQueryClient();
