@@ -48,7 +48,7 @@ export default function UserDropdownMenu() {
                 render={
                     <Button
                         type="button"
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+                        className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 font-semibold text-primary shadow-sm transition hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
                     >
                         {initials}
                     </Button>

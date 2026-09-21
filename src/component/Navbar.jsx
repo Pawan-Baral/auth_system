@@ -10,7 +10,7 @@ export default function Navbar() {
 
     return (<>
 
-        <div className="grid items-center grid-cols-[1fr_auto_1fr] h-16 px-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900">
+        <div className="sticky top-0 z-50 flex h-16 items-center justify-between bg-white px-4 sm:px-6  bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900">
             <div className="flex items-center gap-2">
                 <Link to="/home">
                     <img
@@ -24,7 +24,7 @@ export default function Navbar() {
                 </span>
 
             </div>
-            <nav className=" ">
+            <nav className="hidden md:block ">
                 <ul className="flex items-center   gap-6 list-none">
 
                     <li> <Link to="/home" className="text-slate-200 transition-colors hover:text-white" >Home</Link></li>

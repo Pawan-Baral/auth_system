@@ -2,9 +2,10 @@ import axios from "axios";
 
 //https://auth.durlavparajuli.com.np
 //http://192.168.150.169:3000
-export const API_BASE_URL = "http://192.168.150.169:3000";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const api = axios.create({
-    baseURL: "http://192.168.150.169:3000",
+    baseURL: API_BASE_URL,
 });
 
 // Runs before every request made with this Axios instance.
