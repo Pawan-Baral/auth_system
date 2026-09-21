@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
+
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --primary: (0.1, 0.1, 0.1);
 }
 
 html {

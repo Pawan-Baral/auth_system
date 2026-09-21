@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import ConfirmDialog from "@/component/ConfirmDialog";
-import Loader from "./Loader";
-import { Trash2 } from "lucide-react";
+import ConfirmDialog from "@/component/functional/ConfirmDialog";
+import Loader from "@/component/functional/Loader";
+import { Trash2, Check, } from "lucide-react";
 
 import {
     useMutation,
@@ -15,8 +15,8 @@ import {
     getAdminContacts,
     getContactStats,
     setContactRead,
-} from "@/api/authApi";
-import DataTable from "@/component/DataTable";
+} from "@/service/authApi";
+import DataTable from "@/component/functional/DataTable";
 import { Button } from "@/components/ui/button";
 
 function AdminMessages() {
@@ -155,7 +155,7 @@ function AdminMessages() {
                             >
                                 {isRead
                                     ? "Mark unread"
-                                    : "Mark read"}
+                                    : <Check />}
                             </Button>
 
                             <Button
@@ -176,7 +176,7 @@ function AdminMessages() {
         [
             readMutation,
             deleteMutation,
-            readMutation
+
         ]
     );
     if (contactsQuery.isPending) {

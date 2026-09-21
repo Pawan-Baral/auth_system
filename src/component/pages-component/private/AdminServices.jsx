@@ -1,24 +1,24 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { toast } from "react-toastify";
 import {
     useMutation,
     useQuery,
     useQueryClient,
 } from "@tanstack/react-query";
-import ConfirmDialog from "@/component/ConfirmDialog";
+import ConfirmDialog from "@/component/functional/ConfirmDialog";
 import {
     createService,
     deleteService,
     getServices,
     updateService,
     API_BASE_URL,
-} from "@/api/authApi";
+} from "@/service/authApi";
 
 import { Button } from "@/components/ui/button";
-import AdminServiceForm from "@/component/AdminServiceForm";
-import { useMemo } from "react";
-import DataTable from "@/component/DataTable";
-import Loader from "./Loader";
+import AdminServiceForm from "@/component/pages-component/private/AdminServiceForm";
+
+import DataTable from "@/component/functional/DataTable";
+import Loader from "@/component/functional/Loader";
 import { LayoutGrid, Table, Plus, Pencil, Trash2 } from "lucide-react";
 
 
@@ -39,12 +39,20 @@ function AdminServices() {
     });
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 10;
-    const totalPages = Math.ceil(services.length / usersPerPage);
+    const totalPages = Math.max(1, Math.ceil(services.length / usersPerPage));
     const startIndex = (currentPage - 1) * usersPerPage;
-    const paginatedUsers = services.slice(
+    const paginatedServices = services.slice(
         startIndex,
         startIndex + usersPerPage
     );
+    const openEditForm = useCallback((service) => {
+        setEditingService(service);
+        setShowForm(true);
+    }, []);
+
+    const handleDelete = useCallback((service) => {
+        setDeleteTarget(service);
+    }, []);
     const serviceColumns = useMemo(
         () => [
             {
@@ -184,10 +192,10 @@ function AdminServices() {
         setShowForm(true);
     }
 
-    function openEditForm(service) {
-        setEditingService(service);
-        setShowForm(true);
-    }
+    // function openEditForm(service) {
+    //  setEditingService(service);
+    //     setShowForm(true);
+    // }
 
     function closeForm() {
         setEditingService(null);
@@ -200,10 +208,10 @@ function AdminServices() {
         });
     }
 
-    function handleDelete(service) {
-        setDeleteTarget(service);
+    // function handleDelete(service) {
+    //     setDeleteTarget(service);
 
-    }
+    // }
 
     return (
         <section>
@@ -290,7 +298,7 @@ function AdminServices() {
                                                 />
 
                                             )}
-                                            {console.log(service.image)}
+
 
                                             <p className="mt-2 text-sm text-slate-500">
                                                 {
@@ -362,7 +370,7 @@ function AdminServices() {
 
                                 <div className="mt-6 overflow-x-auto rounded-lg border bg-white">
                                     <DataTable
-                                        data={paginatedUsers}
+                                        data={paginatedServices}
                                         columns={serviceColumns}
                                     />
                                     <div className="flex items-center justify-between border-t p-4">
@@ -408,7 +416,7 @@ function AdminServices() {
                             <p className="mt-6 text-slate-500">
                                 No services found.
                             </p>
-                            toast.error(error.message);
+
                         </>
                         )}
                 </>
